@@ -1,7 +1,23 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
-  <display-name>Web Application Created With eXo IDE</display-name>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <context-param>
+    <description>url to where your app is running</description>
+    <param-name>defaultAppRunUrl</param-name>
+    <param-value>intuitqbosample-ehinx3vcwu.elasticbeanstalk.com</param-value>
+  </context-param>
+  <context-param>
+    <description>Prefix on hostname for the reverse proxy you want to use when running in codenvy</description>
+    <param-name>codEnvyProxyPrefix</param-name>
+    <param-value>jefferyharlowbrewer.qboplugin</param-value>
+  </context-param>
+  <context-param>
+    <description>Prefix on hostname used for reverse proxy when not running in codenvy (like amazon)</description>
+    <param-name>defaultProxyPrefix</param-name>
+    <param-value>aws.qboplugin</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.codenvy.AppListener</listener-class>
+  </listener>
 </web-app>
