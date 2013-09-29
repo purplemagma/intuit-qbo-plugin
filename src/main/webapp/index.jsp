@@ -5,50 +5,36 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
   <head>
     <jsp:directive.page contentType="text/html;charset=UTF-8"></jsp:directive.page> 
+    <!-- Just include this wad of javascript in your page. -->
+    <script type="text/javascript">
+        window.addEventListener("message",function(a){if(a.origin.indexOf("intuit.com")>=1&&a.data&&a.data.initXDM)
+        {var b=document.createElement("script");b.setAttribute("type","text/javascript");b.innerHTML=a.data.initXDM;
+         document.getElementsByTagName("head")[0].appendChild(b)}});
+    </script>
   </head>
   <body bgcolor="white">
-    <h2>Sample intuit.com QBO plugin</h2>
-    Frame origin: <div id="frameOrigin">...</div><br/>
-    
-    <div style="float: left">
-        V3 Service call to company info via XHR<div id="urlLabelV3">...</div><br/>
-        <textarea id="V3Result" disabled="true" rows="60" cols="80">Loading...</textarea><br/>
-    </div>
-    <div>
-        Neo Service call to user profile info via XHR<div id="urlLabelUserInfo">...</div><br/>
-        <textarea id="userInfoResult" disabled="true" rows="60" cols="80">Loading...</textarea><br/>
-    </div>
     <script type="text/javascript">
-      function xhr(url, responseElementId) {
-            var myRequest = new XMLHttpRequest();
-            myRequest.onreadystatechange=function() {
-                if (myRequest.readyState==4 && myRequest.status==200) {
-                    var result = JSON.stringify(JSON.parse(myRequest.responseText), null, 4);
-                    document.getElementById(responseElementId).value = result;
-                }
-            }
-            myRequest.open("GET",url,true);
-            myRequest.withCredentials = true;
-            myRequest.setRequestHeader("Content-Type","application/json");
-            myRequest.setRequestHeader("Accept","application/json");
-            myRequest.setRequestHeader("CsrfToken", '${cookie["qbn.ptc.tkt"].value}');
-            myRequest.send();
-      }
+        // QBO will call you back when the channel is ready 
+        function qboXDMReady() {
+          qboXDM.getContext(function(context) {
+            document.getElementById("id").innerHTML = context.qbo.realmId;
+            document.getElementById("company").innerHTML = context.qbo.companyName;
+            document.getElementById("firstname").innerHTML = context.qbo.user.firstName;
+            document.getElementById("lastname").innerHTML = context.qbo.user.lastName;
 
-      document.getElementById("frameOrigin").innerHTML = location.href;
-      var parts = document.referrer.split("/");
-      var baseUrl = parts[0]+"//"+parts[2]+"/"+parts[3].replace("c","qbo");
-      
-       // V3 Service call
-       var url = baseUrl+'/v3/company/${cookie["qbn.ptc.parentid"].value}/companyinfo/${cookie["qbn.ptc.parentid"].value}';
-       document.getElementById("urlLabelV3").innerHTML = url;
-       xhr(url, "V3Result");
-
-      // user profile call     
-       var url = baseUrl+'/neoservice/authmgmt/userProfile';
-       document.getElementById("urlLabelUserInfo").innerHTML = url;
-       xhr(url, "userInfoResult");
-      
+            var baseUrl = document.location.origin + document.location.pathname.substr(0,document.location.pathname.lastIndexOf("/"));
+              
+            document.getElementById("openTrowser").onclick = function () {
+                qboXDM.openTrowser("xdmtrowser://"+baseUrl+"/trowser.html");
+            };
+          });
+        }
     </script>
+    <div class="pageContent" style="margin: 10px;">
+      Company Id: <span id="id">loading</span><br/>
+      Company Name: <span id="company">loading</span><br/>
+      Hello, <span id="firstname">loading</span>&nbsp;<span id="lastname">loading</span><br/><br/>
+    <button class="button primary" id="openTrowser">Open trowser</button>
+    </div>
   </body>
 </html>
