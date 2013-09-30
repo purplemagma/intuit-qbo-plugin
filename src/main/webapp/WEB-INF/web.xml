@@ -6,7 +6,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <description>Prefix on hostname for the reverse proxy you want to use when running in codenvy</description>
     <param-name>codEnvyProxyPrefix</param-name>
     <!-- put your name here -->
-    <param-value>jeffbrewer.qboplugin</param-value>
+    <param-value><yournamehere>.qboplugin</param-value>
   </context-param>
   
   <context-param>
