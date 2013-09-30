@@ -8,6 +8,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     <!-- put your name here -->
     <param-value>jeffbrewer.qboplugin</param-value>
   </context-param>
+  
   <context-param>
     <description>url to where your app is running</description>
     <param-name>defaultAppRunUrl</param-name>
@@ -21,4 +22,17 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
   <listener>
     <listener-class>com.codenvy.AppListener</listener-class>
   </listener>
+  <servlet>
+    <servlet-name>jersey-serlvet</servlet-name>
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>jersey.config.server.provider.packages</param-name>
+      <param-value>com.intuit.qbo.plugin</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>jersey-serlvet</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping> 
 </web-app>
