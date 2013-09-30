@@ -38,6 +38,7 @@ public class IntuitQBOPlugin
       throw new FMSException("No oAuth token present");
     }
     
+    InternalIPPManager.setupQBOAndPlatformConfig(request);
     CompanyInfo company = InternalIPPManager.getCompanyInfoWithoAuth(consumer, InternalIPPManager.getRealmId(request));
     
     if (company == null) {
