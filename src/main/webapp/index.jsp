@@ -78,7 +78,7 @@
       <div style="border-style: solid; border-width: 1px; margin: 10px; padding: 10px;">
           Company Id: <span id="id" style="font-weight:bold;">loading...</span><br/>
           Company Name: <span id="company" style="font-weight:bold;">loading...</span><br/>
-          Hello, <span id="firstname" style="font-weight:bold;">loading...</span>&nbsp;<span id="lastname">loading</span>
+          Hello, <span id="firstname" style="font-weight:bold;">loading...</span>&nbsp;<span id="lastname">loading...</span>
       </div>
       <div style="border-style: solid; border-width: 1px; margin: 10px; padding: 10px;">
           oAuth: <span id="oAuth" style="font-weight:bold;">none</span><br/>
