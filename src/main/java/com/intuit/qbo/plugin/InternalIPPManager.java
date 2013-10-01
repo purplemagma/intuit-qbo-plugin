@@ -186,21 +186,13 @@ public class InternalIPPManager {
     /*
      * Dynamically setup the platform config
      */
-     public static void setupQBOAndPlatformConfig(HttpServletRequest request) {
+     private static void setupQBOAndPlatformConfig() {
        try {
          if (props.getProperty("ipp_platform_service_url") != null && !props.getProperty("ipp_platform_service_url").isEmpty()) {
            Config.setProperty(Config.BASE_URL_PLATFORMSERVICE, props.getProperty("ipp_platform_service_url"));
          }
-         if (props.getProperty("qbo_url") == null || props.getProperty("qbo_url").isEmpty()) {
-           String v3ServiceUrl = request.getHeader("V3ServiceUrl");
-           if (v3ServiceUrl.endsWith("/")) {
-             v3ServiceUrl = v3ServiceUrl.substring(0, v3ServiceUrl.length()-1);
-           }
-           v3ServiceUrl = v3ServiceUrl.substring(0, v3ServiceUrl.lastIndexOf("/"));
-           Config.setProperty(Config.BASE_URL_QBO, v3ServiceUrl);
-         } else {
-           Config.setProperty(Config.BASE_URL_QBO, props.getProperty("qbo_url"));
-           
+         if (props.getProperty("qbo_url") != null && !props.getProperty("qbo_url").isEmpty()) {
+           Config.setProperty(Config.BASE_URL_QBO, props.getProperty("qbo_url"));           
          }
        } catch (Exception ex) {
        }
@@ -208,12 +200,6 @@ public class InternalIPPManager {
           
     /*
      * Example of calling a v3 service API with just a ticket and IPP dev kit
-     * 
-     * To run against a particular pre-prod instance,
-     * Set environment variable IPP_QBO_BASE_URL=https://qa.qbo.intuit.com/qbo2/v3/company
-     * Otherwise, it will hit production. Production has a gateway url that figures out which cluster
-     * Unfortunately, there is no gateway url for QA (only for E2E)
-     * You can also override this in intuit-config.xml
      */
     public static CompanyInfo getCompanyInfoWithTicket(
             HttpServletRequest request) throws FMSException {
@@ -235,6 +221,7 @@ public class InternalIPPManager {
      */
     public static CompanyInfo getCompanyInfoWithoAuth(OAuthConsumer consumer,
             String realmId) throws FMSException {
+        setupQBOAndPlatformConfig();
         IAuthorizer authorizer = new OAuthAuthorizer(consumer.getConsumerKey(),
                 consumer.getConsumerSecret(), consumer.getToken(),
                 consumer.getTokenSecret());
@@ -252,6 +239,7 @@ public class InternalIPPManager {
      */
     public static int getCustomerCountWithoAuth(OAuthConsumer consumer,
             String realmId) throws FMSException {
+        setupQBOAndPlatformConfig();
         IAuthorizer authorizer = new OAuthAuthorizer(consumer.getConsumerKey(),
                 consumer.getConsumerSecret(), consumer.getToken(),
                 consumer.getTokenSecret());
