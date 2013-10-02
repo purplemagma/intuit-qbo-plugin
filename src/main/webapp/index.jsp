@@ -14,13 +14,10 @@
   </head>
   <body bgcolor="white">
     <script type="text/javascript">
-      var v3ServiceUrl;
-      
       xhrget = function(url, callback) {
         var oReq = new XMLHttpRequest();
         oReq.onload = function() { if (this.readyState == 4) {callback(this)} };
         oReq.open("get", url, true);
-        oReq.setRequestHeader("V3ServiceUrl", v3ServiceUrl);
         oReq.send();
       }
         // QBO will call you back when the channel is ready. Good place for initialization code
@@ -31,7 +28,6 @@
             document.getElementById("company").innerHTML = context.qbo.companyName;
             document.getElementById("firstname").innerHTML = context.qbo.user.firstName;
             document.getElementById("lastname").innerHTML = context.qbo.user.lastName;
-            v3ServiceUrl = context.qbo.v3ServiceBaseUrl;
 
             // Get current status of oAuth from my server
             document.getElementById("oAuth").innerHTML = "Getting...";
@@ -45,8 +41,8 @@
 
             // Open trowser example
             var baseUrl = document.location.origin + document.location.pathname.substr(0,document.location.pathname.lastIndexOf("/"));
-            document.getElementById("openTrowser").onclick = function () {
-                qboXDM.openTrowser("xdmtrowser://"+baseUrl+"/trowser.jsp");
+            document.getElementById("navigate").onclick = function () {
+                qboXDM.navigate("xdmtrowser://"+baseUrl+"/trowser.jsp");
             };
             
             // Get new oAuth 
@@ -91,7 +87,7 @@
         <button class="button" id="countCustomersButton">Do Customer Count</button>
       </div>      
 
-      <button class="button primary" id="openTrowser">Open trowser</button>
+      <button class="button primary" id="navigate">Open trowser</button>
     </div>
   </body>
 </html>
