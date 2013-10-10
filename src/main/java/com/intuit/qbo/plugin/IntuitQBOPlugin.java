@@ -23,6 +23,10 @@ public class IntuitQBOPlugin
   public Response getoAuthTokens() {
     OAuthConsumer consumer = InternalIPPManager.retrieveoAuthToken(request);
     
+    if (consumer == null) {
+      Response.serverError().entity("Error").build();
+    }
+    
     request.getSession().setAttribute("oAuthConsumer", consumer);
     
     return Response.ok().entity("Tokens retrieved").build();      
