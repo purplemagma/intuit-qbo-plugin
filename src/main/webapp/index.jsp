@@ -40,12 +40,30 @@
             });
 
             // Open trowser example
-            var baseUrl = document.location.origin + document.location.pathname.substr(0,document.location.pathname.lastIndexOf("/"));
+            var path = document.location.pathname.substr(1,document.location.pathname.lastIndexOf("/")),
+                baseUrl = document.location.origin+"/"+path,
+                element;
             document.getElementById("navigate").onclick = function () {
-                qboXDM.navigate("xdmtrowser://"+baseUrl+"/trowser.jsp");
+                qboXDM.navigate("xdmtrowser://"+baseUrl+"trowser.jsp");
             };
-            
-            // Get new oAuth 
+
+            document.getElementById("navigateRelative").onclick = function () {
+                qboXDM.navigate("xdmtrowser://"+path+"trowser.jsp");
+            };
+            // Close trowser, available only if page is opened inside of a trowser
+            if (context.qbo.trowser) {
+              element = document.getElementById("closeTrowser");
+              element.style.visibility = "visible";
+              element.onclick = function () {
+                  qboXDM.closeTrowser();
+              };
+            }
+            // switches app to activated state on QBO side, doesn't affect IPP
+            document.getElementById("activate").onclick = function () {
+                qboXDM.updateAppSubscriptionState();
+            };
+
+            // Get new oAuth
             document.getElementById("getNewOAuthButton").onclick = function () {
               document.getElementById("oAuth").innerHTML = "Getting...";
               xhrget("rest/NewoAuth", function(response) {
@@ -87,7 +105,10 @@
         <button class="button" id="countCustomersButton">Do Customer Count</button>
       </div>      
 
-      <button class="button primary" id="navigate">Open trowser</button>
+      <button class="button primary" id="navigate">Open trowser (absolute path)</button>
+      <button class="button primary" id="navigateRelative">Open trowser (relative path)</button>
+      <button class="button primary" id="activate">Activate</button>
+      <button class="button primary" id="closeTrowser" style="visibility: hidden;">Close trowser</button>
     </div>
   </body>
 </html>
