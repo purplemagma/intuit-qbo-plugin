@@ -105,7 +105,7 @@ public class InternalIPPManager {
             // Hydrate browser with cookies and call Workplace Logon
             DefaultHttpClient client = new DefaultHttpClient();
             CookieStore cookies = new BasicCookieStore();
-            String cookiePrefix = props.getProperty("cookie.prefix");
+            String cookiePrefix = props.getProperty("cookie.prefix.qbn");
             cookies.addCookie(buildCookie(cookiePrefix + TICKET, ticket));
             cookies.addCookie(buildCookie(cookiePrefix + "tkt", ticket));
             cookies.addCookie(buildCookie(cookiePrefix + PARENTID, realmId));
@@ -152,7 +152,8 @@ public class InternalIPPManager {
 
     public static Map<String, String> getCookieAuth(HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
-        String cookiePrefix = props.getProperty("cookie.prefix");
+        String cookiePrefix = props.getProperty("cookie.prefix.qbn");
+        String cookieQBOPrefix = props.getProperty("cookie.prefix");
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals(cookiePrefix + TICKET)) {
                 result.put(TICKET, cookie.getValue());
@@ -160,7 +161,7 @@ public class InternalIPPManager {
             if (cookie.getName().equals(cookiePrefix + AUTHID)) {
                 result.put(AUTHID, cookie.getValue());
             }
-            if (cookie.getName().equals(cookiePrefix + PARENTID)) {
+            if (cookie.getName().equals(cookieQBOPrefix + PARENTID)) {
                 result.put(PARENTID, cookie.getValue());
             }
         }
