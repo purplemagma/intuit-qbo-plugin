@@ -15,6 +15,10 @@
   <body bgcolor="white">
     <script type="text/javascript">
         // QBO will call you back when the channel is ready 
+        function qboXDMReceiveMessage(message) {
+            console.log("Received a message in trowser:" + message);
+        }
+
         function qboXDMReady() {
           document.getElementById("scroller").style.height = document.height-150;
           document.getElementById("closeTrowser").onclick = function () {

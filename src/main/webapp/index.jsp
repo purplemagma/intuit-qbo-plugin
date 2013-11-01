@@ -20,6 +20,9 @@
         oReq.open("get", url, true);
         oReq.send();
       }
+        qboXDMReceiveMessage = function(message) {
+            console.log("Received a message:" + message);
+        }
         // QBO will call you back when the channel is ready. Good place for initialization code
         qboXDMReady = function() {
           qboXDM.getContext(function(context) {
