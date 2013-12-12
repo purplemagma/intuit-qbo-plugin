@@ -63,9 +63,11 @@
             }
             // switches app to activated state on QBO side, doesn't affect IPP
             document.getElementById("activate").onclick = function () {
-                qboXDM.updateAppSubscriptionState();
+                qboXDM.updateAppSubscriptionState(function(){console.log("activate success");}, function(){console.log("activate failure");});
             };
-
+            document.getElementById("subscribe").onclick = function () {
+                qboXDM.subscribe(document.getElementById("subscribePlanId").value, function(){console.log("subscribe success");}, function(){console.log("subscribe failure");});
+            };
             // Get new oAuth
             document.getElementById("getNewOAuthButton").onclick = function () {
               document.getElementById("oAuth").innerHTML = "Getting...";
@@ -111,6 +113,8 @@
       <button class="button primary" id="navigate">Open trowser (absolute path)</button>
       <button class="button primary" id="navigateRelative">Open trowser (relative path)</button>
       <button class="button primary" id="activate">Activate</button>
+      PlanId:<input type="text" id="subscribePlanId">
+      <button class="button primary" id="subscribe">Subscribe</button>
       <button class="button primary" id="closeTrowser" style="visibility: hidden;">Close trowser</button>
     </div>
   </body>
