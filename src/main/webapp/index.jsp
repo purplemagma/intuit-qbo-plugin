@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?> 
+<?xml version="1.0" encoding="UTF-8" ?>
 <html
   xmlns:jsp="http://java.sun.com/JSP/Page"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions" >
   <head>
-    <jsp:directive.page contentType="text/html;charset=UTF-8"></jsp:directive.page> 
+    <jsp:directive.page contentType="text/html;charset=UTF-8"></jsp:directive.page>
     <!-- Just include this wad of javascript in your page. -->
     <script type="text/javascript">
         window.addEventListener("message",function(a){if(a.origin.indexOf("intuit.com")>=1&&a.data&&a.data.initXDM)
@@ -20,9 +20,10 @@
         oReq.open("get", url, true);
         oReq.send();
       }
-        qboXDMReceiveMessage = function(message) {
-            console.log("Received a message:" + message);
-        }
+      qboXDMReceiveMessage = function(message) {
+        console.log("Received a message:");
+        console.log(message);
+      }
         // QBO will call you back when the channel is ready. Good place for initialization code
         qboXDMReady = function() {
           qboXDM.getContext(function(context) {
@@ -46,11 +47,7 @@
             var path = document.location.pathname.substr(1,document.location.pathname.lastIndexOf("/")),
                 baseUrl = document.location.origin+"/"+path,
                 element;
-            document.getElementById("navigate").onclick = function () {
-                qboXDM.navigate("xdmtrowser://"+baseUrl+"trowser.jsp");
-            };
-
-            document.getElementById("navigateRelative").onclick = function () {
+            document.getElementById("navigateTrowser").onclick = function () {
                 qboXDM.navigate("xdmtrowser://"+path+"trowser.jsp");
             };
             // Close trowser, available only if page is opened inside of a trowser
@@ -63,10 +60,19 @@
             }
             // switches app to activated state on QBO side, doesn't affect IPP
             document.getElementById("activate").onclick = function () {
-                qboXDM.updateAppSubscriptionState(function(){console.log("activate success");}, function(){console.log("activate failure");});
+              qboXDM.updateAppSubscriptionState(function(){console.log("activate success");}, function(){console.log("activate failure");});
+            };
+            document.getElementById("navigate").onclick = function () {
+              qboXDM.navigate(document.getElementById("navigateUrl").value);
+            };
+            document.getElementById("openDialog").onclick = function () {
+              qboXDM.showNameListDialog(document.getElementById("openDialogId").value);
+            };
+            document.getElementById("showMessage").onclick = function () {
+              qboXDM.showPageMessage(document.getElementById("showMessageText").value, document.getElementById("showMessageAlert").checked);
             };
             document.getElementById("subscribe").onclick = function () {
-                qboXDM.subscribe(document.getElementById("subscribePlanId").value, function(){console.log("subscribe success");}, function(){console.log("subscribe failure");});
+              qboXDM.subscribe(document.getElementById("subscribePlanId").value, function(){console.log("subscribe success");}, function(){console.log("subscribe failure");});
             };
             // Get new oAuth
             document.getElementById("getNewOAuthButton").onclick = function () {
@@ -79,7 +85,7 @@
                   }
               });
             };
-            
+
             document.getElementById("countCustomersButton").onclick = function () {
               document.getElementById("customerCount").innerHTML = "Getting...";
               xhrget("rest/customerCount", function(response) {
@@ -102,19 +108,42 @@
       <div style="border-style: solid; border-width: 1px; margin: 10px; padding: 10px;">
           oAuth: <span id="oAuth" style="font-weight:bold;">none</span><br/>
           <button class="button" id="getNewOAuthButton">Get New oAuth</button>
-      </div>      
-      
+      </div>
+
       <div style="border-style: solid; border-width: 1px; margin: 10px; padding: 10px;">
         Sample v3 Service call: <b>select count(*) from customer</b><br/>
         Result: <span id="customerCount" style="font-weight:bold;">None</span><br/>
         <button class="button" id="countCustomersButton">Do Customer Count</button>
-      </div>      
+      </div>
 
-      <button class="button primary" id="navigate">Open trowser (absolute path)</button>
-      <button class="button primary" id="navigateRelative">Open trowser (relative path)</button>
-      <button class="button primary" id="activate">Activate</button>
+      <button class="button primary" id="navigateTrowser">Open trowser</button>
+      <br/>
+      <br/>
+      <input type="text" id="navigateUrl">
+      <button class="button primary" id="navigate">Navigate</button>
+      <br/>
+      <br/>
+      <select id="openDialogId">
+        <option value="customer" selected="selected">qbo/lists/name/customer/CustomerDialogViewController</option>
+        <option value="vendor">qbo/lists/name/vendor/VendorDialogViewController</option>
+        <option value="employee">qbo/lists/name/employee/EmployeeDialogViewController</option>
+        <option value="taxcode">qbo/lists/taxcode/TaxCodeDialogViewController</option>
+      </select>
+      <button class="button primary" id="openDialog">Open dialog</button>
+      <br/>
+      <br/>
+      <input type="text" id="showMessageText">
+      <input type="checkbox" id="showMessageAlert"> (Alert)
+      <button class="button primary" id="showMessage">Show Message</button>
+      <br/>
+      <br/>
+      <button class="button primary" id="activate">Update subscription status</button>
+      <br/>
+      <br/>
       PlanId:<input type="text" id="subscribePlanId">
       <button class="button primary" id="subscribe">Subscribe</button>
+      <br/>
+      <br/>
       <button class="button primary" id="closeTrowser" style="visibility: hidden;">Close trowser</button>
     </div>
   </body>

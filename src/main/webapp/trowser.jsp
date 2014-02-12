@@ -16,7 +16,8 @@
     <script type="text/javascript">
         // QBO will call you back when the channel is ready 
         function qboXDMReceiveMessage(message) {
-            console.log("Received a message in trowser:" + message);
+          console.log("Received a message in trowser:");
+          console.log(message);
         }
 
         function qboXDMReady() {
