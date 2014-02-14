@@ -66,7 +66,7 @@
               qboXDM.navigate(document.getElementById("navigateUrl").value);
             };
             document.getElementById("openDialog").onclick = function () {
-              qboXDM.showNameListDialog(document.getElementById("openDialogId").value);
+              qboXDM.showDialog(document.getElementById("openDialogId").value);
             };
             document.getElementById("showMessage").onclick = function () {
               qboXDM.showPageMessage(document.getElementById("showMessageText").value, document.getElementById("showMessageAlert").checked);
@@ -124,10 +124,10 @@
       <br/>
       <br/>
       <select id="openDialogId">
-        <option value="customer" selected="selected">qbo/lists/name/customer/CustomerDialogViewController</option>
-        <option value="vendor">qbo/lists/name/vendor/VendorDialogViewController</option>
-        <option value="employee">qbo/lists/name/employee/EmployeeDialogViewController</option>
-        <option value="taxcode">qbo/lists/taxcode/TaxCodeDialogViewController</option>
+        <option value="qbo/lists/name/customer/CustomerDialogViewController" selected="selected">qbo/lists/name/customer/CustomerDialogViewController</option>
+        <option value="qbo/lists/name/vendor/VendorDialogViewController">qbo/lists/name/vendor/VendorDialogViewController</option>
+        <option value="qbo/lists/name/employee/EmployeeDialogViewController">qbo/lists/name/employee/EmployeeDialogViewController</option>
+        <option value="qbo/lists/taxcode/TaxCodeDialogViewController">qbo/lists/taxcode/TaxCodeDialogViewController</option>
       </select>
       <button class="button primary" id="openDialog">Open dialog</button>
       <br/>
