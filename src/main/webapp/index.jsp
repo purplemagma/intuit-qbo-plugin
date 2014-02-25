@@ -24,6 +24,14 @@
         console.log("Received a message:");
         console.log(message);
       }
+
+      qboXDMSaveState = function(data, successFn, errorFn) {
+        if (data && data.test) {
+          successFn("data.test is true");
+        } else {
+          errorFn("data.test is false");
+        }
+      }
         // QBO will call you back when the channel is ready. Good place for initialization code
         qboXDMReady = function() {
           qboXDM.getContext(function(context) {
