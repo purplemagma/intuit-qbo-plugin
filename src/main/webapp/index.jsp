@@ -19,19 +19,83 @@
         oReq.onload = function() { if (this.readyState == 4) {callback(this)} };
         oReq.open("get", url, true);
         oReq.send();
-      }
-      qboXDMReceiveMessage = function(message) {
+      };
+      saveTryCount = 0;
+      qboXDMReceiveMessage = function(message,s,f) {
         console.log("Received a message:");
         console.log(message);
-      }
-
-      qboXDMSaveState = function(data, successFn, errorFn) {
-        if (data && data.test) {
-          successFn("data.test is true");
-        } else {
-          errorFn("data.test is false");
+        if (message) {
+          if (message.eventName === "qbo-action-settings-dirty_check") {
+            var dirtyAction = getRadioValue("settingsDirtyCheck");
+            if (dirtyAction === "settingsDirtySuccess") {
+              s({result: document.getElementById("settingsDirtyModel").checked});
+            }
+            if (dirtyAction === "settingsDirtyFailure") {
+              f();
+            }
+            if (dirtyAction === "settingsDirtyTimeout") {
+              // just waiting
+            }
+          }
+          if (message.eventName === "qbo-action-settings-switch") {
+            if (message.data.editMode) {
+              document.getElementById("settingsStatus").innerHTML = new Date().getTime() + " Edit mode on";
+            } else {
+              document.getElementById("settingsStatus").innerHTML = new Date().getTime() + " Edit mode off";
+            }
+          }
+          if (message.eventName === "qbo-action-settings-save") {
+            var saveAction = getRadioValue("settingsSaveStatus");
+            if (saveAction === "settingsSaveValidationFailure") {
+              document.getElementById("settingsStatus").innerHTML = new Date().getTime() + " Validation failure! Edit mode on";
+              f({handled: true});
+            } else {
+              document.getElementById("settingsStatus").innerHTML = new Date().getTime() + " Edit mode on";
+            }
+            if (saveAction === "settingsSaveSuccess") {
+              s();
+            }
+            if (saveAction === "settingsSaveError") {
+              f({message: "Failed to save your data in plugin!"});
+            }
+            if (saveAction === "settingsSaveTimeout") {
+              // nothing, just waiting
+            }
+            if (saveAction === "settingsSaveTakesLong") {
+              if (saveTryCount == 0) {
+                setTimeout(f.bind(this, {extend: true}), message.data.timeout - 500);
+                saveTryCount++;
+              } else if (saveTryCount == 1) {
+                setTimeout(s.bind(this), (message.data.timeout - 500));
+                saveTryCount = 0;
+              }
+            }
+            if (saveAction === "settingsSaveTakesTooLong") {
+              if (saveTryCount == 0) {
+                setTimeout(f.bind(this, {extend: true}), message.data.timeout - 500);
+                saveTryCount++;
+              } else if (saveTryCount == 1) {
+                setTimeout(f.bind(this, {extend: true}), (message.data.timeout - 500));
+                saveTryCount++;
+              } else if (saveTryCount == 2) {
+                setTimeout(f.bind(this, {extend: true}), (message.data.timeout - 500));
+                saveTryCount = 0;
+              }
+            }
+          }
         }
-      }
+      };
+
+      function getRadioValue(theRadioGroup) {
+        var elements = document.getElementsByName(theRadioGroup);
+        for (var i = 0, l = elements.length; i < l; i++)
+        {
+          if (elements[i].checked)
+          {
+            return elements[i].value;
+          }
+        }
+      };
         // QBO will call you back when the channel is ready. Good place for initialization code
         qboXDMReady = function() {
           qboXDM.getContext(function(context) {
@@ -82,6 +146,9 @@
             document.getElementById("subscribe").onclick = function () {
               qboXDM.subscribe(document.getElementById("subscribePlanId").value, function(){console.log("subscribe success");}, function(){console.log("subscribe failure");});
             };
+            document.getElementById("settingsDone").onclick = function () {
+              setTimeout(qboXDM.emitEvent.bind(this, "close-settings-section"), 50);
+            };
             // Get new oAuth
             document.getElementById("getNewOAuthButton").onclick = function () {
               document.getElementById("oAuth").innerHTML = "Getting...";
@@ -105,7 +172,7 @@
               });
             };
           });
-        }
+        };
     </script>
     <div class="pageContent" style="margin: 10px;">
       <div style="border-style: solid; border-width: 1px; margin: 10px; padding: 10px;">
@@ -153,6 +220,32 @@
       <br/>
       <br/>
       <button class="button primary" id="closeTrowser" style="visibility: hidden;">Close trowser</button>
+      Settings section
+      <div>
+        Status: <span id="settingsStatus"></span>
+        <br/>
+        <input type="checkbox" id="settingsDirtyModel"> Dirty model
+        <br/>
+        <input type="radio" name="settingsDirtyCheck" value="settingsDirtySuccess" checked> Successfull check for dirty model
+        <br/>
+        <input type="radio" name="settingsDirtyCheck" value="settingsDirtyFailure"> Failed check for dirty model
+        <br/>
+        <input type="radio" name="settingsDirtyCheck" value="settingsDirtyTimeout"> Timed out check for dirty model
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveSuccess" checked> Simulate save success
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveError"> Simulate save error
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveTimeout"> Simulate save timeout
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveTakesLong"> Simulate save taking more than timeout
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveTakesTooLong"> Simulate save taking more than cut off timeout
+        <br/>
+        <input type="radio" name="settingsSaveStatus" value="settingsSaveValidationFailure"> Simulate handled validation failure
+        <br/>
+        <button class="button primary" id="settingsDone">Done</button>
+      </div>
     </div>
   </body>
 </html>
