@@ -149,6 +149,9 @@
             document.getElementById("settingsDone").onclick = function () {
               setTimeout(qboXDM.emitEvent.bind(this, "close-settings-section"), 50);
             };
+            document.getElementById("showSpinner").onclick = function () {
+              qboXDM.showSpinner(function(response){console.log(response);});
+            };
             // Get new oAuth
             document.getElementById("getNewOAuthButton").onclick = function () {
               document.getElementById("oAuth").innerHTML = "Getting...";
@@ -220,6 +223,9 @@
       <br/>
       <br/>
       <button class="button primary" id="closeTrowser" style="visibility: hidden;">Close trowser</button>
+      <br/>
+      <br/>
+      <button class="button primary" id="showSpinner">Show Spinner</button>
       Settings section
       <div>
         Status: <span id="settingsStatus"></span>
