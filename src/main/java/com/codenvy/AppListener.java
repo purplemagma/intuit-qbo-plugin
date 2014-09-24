@@ -6,6 +6,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -64,11 +66,15 @@ public class AppListener implements ServletContextListener
   }
     
   public static void updateProxyUrl() {
-    try {      
-      HttpClient httpClient = new DefaultHttpClient();
+    try {
+      HttpParams httpParams = new BasicHttpParams();
+      httpParams.setIntParameter("http.connection.timeout", 5000);
+      httpParams.setIntParameter("http.socket.timeout", 5000);
+      HttpClient httpClient = new DefaultHttpClient(httpParams);
       HttpGet httpGet = new HttpGet(PROXY_UPDATE_URL+getProxyHost()+".."+getAppRunUrl());
       httpClient.execute(httpGet);
     } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 
